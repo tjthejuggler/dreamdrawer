@@ -1,0 +1,82 @@
+11/25/23
+get it to split on commas and make new sentences from each different part of the sentence.
+
+11/21/23
+after i get the list of prompts maybe i should have an ai look through it and say if there are any key things that are missing. ideally it is able to put the missing propts in the right place chronologically.
+
+maybe i could have an ai go through the prompts and decide if there are any that should be removed from the list based on how irrelevant or if we already have quite a few like that.
+
+it would be nice if there was an easy way to order a set of prompts, like a drag and drop way to change their modified time
+
+11/20/23
+Only get a single prompt from the SD prompt maker and ask it several times, or maybe make another agent that specializes in separating prompts, or maybe just make the prompt better to force it more into a proper response.
+
+show the prompts more cleary
+
+11/20/23
+I am getting this message when i make pic through terminal:
+Cannot initialize model with low cpu memory usage because `accelerate` was not found in the environment. Defaulting to `low_cpu_mem_usage=False`. It is strongly recommended to install `accelerate` for faster and less memory-intense model loading. You can do so with: 
+
+Find out why I cant make more than one image at a time  with a given prompt. It crashes from amemory error
+
+Pictures need to be more connected. Maybe I could hook up autogen to have another LLM go back through and check to be sure that the whole story is represented.
+
+11/18/23
+
+1 - I give the raw dream to an AI. It has information about real world people, like myself, and if it sees me being referenced in a prompt then it switches me out for a real description of myself when it makes the sentence a bit more visual. Also, if it sees generic people, then it creates a consistency characteristic for that person so that whenever they are mentioned, that character has that characteristic. This is designed to make the characters look distinct. It should output every every sentences as a json item, each with a number for a key.
+
+2 - This outputted json is then hooked up to a loop where each sentence gets passed over to a different ai prompt that is told to make some number of SD prompts for it. 
+
+3 - once all the sentences have each been turned into a few different prompts, it starts sending those prompts over to SD.
+
+4 - i look through all the images and choose which ones to actually put into the dream
+
+
+11/7/23
+to start, lets just make something that takes in a dream and creates prompts for me to manually give to chatgpt to get it to make the art prompts.
+
+maybe we could even eventually automatically have it sent into the chatgpt console
+
+
+this project is in projects/tail/create_dream_images
+
+set up gpt requests to make several different prompts from each sentence, and possibly even multiple different prompts from a sentence
+
+organize the stuff below
+
+make it separate each sentence in the file, then take the sentences and pass them individually through gpt4 along with prompt examples to have it get prompts(maybe it should focus on one sentence, but give the whole thing to chatgpt so it has extra conext) and make a bunch of images with the prompts it creates.
+
+---------
+
+ART STUFF
+should automatically tack on a bunch of different types of artists
+
+there should be a way to go deeper after image generation as well as to tell it to before
+
+--------
+
+TASKER THINGS
+I can show more recently added images more times in a row before going to the next image.
+
+there should be different modes that I can be in of showing images, this way I can occasionally switch from mode to mode. One mode can be one where I take 24,48,72(or something like this) Hours from the most recent image I have and make that period be the short term.
+
+ordered background also has a button to go to next. maybe it randomly chooses if its todaya or the whple runs. maybe today should be extended to the last few days. maybe next button should also have the randomizer in it bwtween short and long term.
+
+images should maybe not be random, but rather on a sequencial loop that alternates back and forth between today and all of history. to do thism keep track of what that last picture shown from today is as well as the last non-today pic
+
+maybe background dream likeliness should smoothly go down as it gets further away in time, however maybe likeliness should go back up again after awhile, maybe in waves
+
+---------
+
+MAYBE: 
+
+most important aspects and other aspects get randomized and I'm given a large set of images to choose from
+
+---------
+
+NEEDS GONE OVER
+
+-longer time for drm image to change after I unlock phone. Maybe it would be nice to show consecutive images from the same timeline
+-dd the sentence the image came from could be the name of the image and it can be shown on the phone in a widget when that image is the background
+-get a way to make myself in SD situations
+-easy way to fix text SD images? changing text but keep the font and colors
