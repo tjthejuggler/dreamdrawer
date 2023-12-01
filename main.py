@@ -1,4 +1,4 @@
-import requests
+import subprocess
 import nltk
 nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
@@ -11,6 +11,10 @@ from torchvision import transforms
 import sys
 import json
 import os
+from ask_local_llm import send_prompt_to_llm
+import time
+
+import LMstudio_RPA
 
 # Get the home directory of the current user
 home_directory = os.path.expanduser('~')
@@ -28,23 +32,6 @@ print("story", story)
 with open(home_directory + "/projects/dreamdrawer/system_prompts/SD_system_prompt.txt", "r") as f:
     SD_system_prompt = f.read()
 
-# Function to send prompts to your local LLM
-def send_prompt_to_llm(system_prompt, user_prompt):
-    url = "http://localhost:1234/v1/chat/completions"
-    headers = {"Content-Type": "application/json"}
-    data = {
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "temperature": 0.7,
-        "max_tokens": -1,
-        "stream": False
-    }
-
-    response = requests.post(url, headers=headers, json=data).json()
-    return response['choices'][0]['message']['content']
-
 def check_if_first_person_pronoun(sentence):
     first_person_pronouns = ['i', 'i\'m', 'me', 'we', 'us', 'my', 'mine', 'our', 'ours']
     sentence = sentence.lower()
@@ -60,13 +47,13 @@ def me_swapped_intelligently(sentence):
         system_prompt = f.read()
     
     #story_context = f"Story: {story}\nCharacter Descriptions: {name_rules}\nPhrases: {phrases}"
-    return send_prompt_to_llm(system_prompt, sentence)
+    return send_prompt_to_llm(sentence, system_prompt)
 
 def automated_name_swapping(sentence):
     print('sentence',sentence)
     # with open ("~/projects/dreamdrawer/system_prompts/my_replacements_dict.json", "r") as f:
     #     replacements = json.load(f)
-    with open (home_directory + "/projects/dreamdrawer/system_prompts/my_replacements_dict.json", "r") as f:
+    with open (home_directory + "/projects/dreamdrawer/my_replacements_dict.json", "r") as f:
         replacements = json.load(f)
     sentence = sentence.lower()
     for name, description in replacements.items():
@@ -93,41 +80,41 @@ def format_llm_output_as_list(llm_output):
 def replace_pronouns_based_on_context(sentence, story):
     system_prompt = "You are an expert editor. You follow directions exactly. You only ever say a single sentence. You Receive a story and a sentence. You replace pronouns in the sentence with any relevant specifics from the story."
     combined_sentence = 'Story:\n' + story + '\n\nSentence to be edited: ' + sentence + '\n\nRespond only with a single sentence.'
-    replace_pronouns_based_on_context_sentence = send_prompt_to_llm(system_prompt, combined_sentence)
+    replace_pronouns_based_on_context_sentence = send_prompt_to_llm(combined_sentence, system_prompt)
     print("Original sentence:\n", sentence,"\nReplaced pronouns response:\n", replace_pronouns_based_on_context_sentence, "\n\n")
     return replace_pronouns_based_on_context_sentence
 
 def story_board_creator_picture_description(sentence, story):
     system_prompt = "You are a creative scene creator. You follow directions exactly. You only ever say a single sentence. You are an artist. You receive a background story and a specific sentence and you respond with a visual description that portrays a single picture that could be taken of a scene from that specific sentence."
     combined_sentence = 'Background story:\n' + story + '\n\nSpecific Sentence: ' + sentence + '\n\nRespond only with a single sentence.'
-    story_board_key_description = send_prompt_to_llm(system_prompt, combined_sentence)
+    story_board_key_description = send_prompt_to_llm(combined_sentence, system_prompt)
     print("Original sentence:\n", sentence,"\nKey description response:\n", story_board_key_description, "\n\n")
     return story_board_key_description
 
 def story_board_creator_key_description(sentence, story):
     system_prompt = "You are a creative story board creator. You follow directions exactly. You only ever say a single sentence. You are an artist. You receive a background story and a specific sentence and you respond with a visual description that encompases a key aspect of that specific sentence."
     combined_sentence = 'Background story:\n' + story + '\n\nSpecific Sentence: ' + sentence + '\n\nRespond only with a single sentence.'
-    story_board_key_description = send_prompt_to_llm(system_prompt, combined_sentence)
+    story_board_key_description = send_prompt_to_llm(combined_sentence, system_prompt)
     print("Original sentence:\n", sentence,"\nKey description response:\n", story_board_key_description, "\n\n")
     return story_board_key_description
 
 def story_board_creator_important_object_description(sentence, story):
     system_prompt = "You are an image description creator. You follow directions exactly. You only ever say a single discription. You never write a complete sentence. You receive a background story and a specific sentence and you respond with a visual description of an important object that would be found in this scene."
     combined_sentence = 'Background story:\n' + story + '\n\nSpecific Sentence: ' + sentence + '\n\nRespond only with a single sentence.'
-    story_board_minor_description = send_prompt_to_llm(system_prompt, combined_sentence)
+    story_board_minor_description = send_prompt_to_llm(combined_sentence, system_prompt)
     print("Original sentence:\n", sentence,"\Importnat object description response:\n", story_board_minor_description, "\n\n")
     return story_board_minor_description
 
 def story_board_creator_minor_description(sentence, story):
     system_prompt = "You are an image description creator. You follow directions exactly. You only ever say a single discription. You never write a complete sentence. You receive a background story and a specific sentence and you respond with a visual description of a minor object that would be found in this scene."
     combined_sentence = 'Background story:\n' + story + '\n\nSpecific Sentence: ' + sentence + '\n\nRespond only with a single sentence.'
-    story_board_minor_description = send_prompt_to_llm(system_prompt, combined_sentence)
+    story_board_minor_description = send_prompt_to_llm(combined_sentence, system_prompt)
     print("Original sentence:\n", sentence,"\nMinor object description response:\n", story_board_minor_description, "\n\n")
     return story_board_minor_description
 
 def shorten_this_prompt(sentence):
     system_prompt = "You are a text editor. You follow directions exactly. You only ever say a single sentence. You receive some text and you respond with less than 350 characters."
-    shortened_sentence = send_prompt_to_llm(system_prompt, sentence)
+    shortened_sentence = send_prompt_to_llm(sentence, system_prompt)
     print("Original sentence:\n", sentence,"\nShortened sentence:\n", shortened_sentence, "\n\n")
     return shortened_sentence
 
@@ -196,6 +183,11 @@ def split_string_on_commas(input_string):
 
 # Main pipeline function
 def story_to_sd_prompts(story):
+    # Start the LLM server
+    LMstudio_RPA.start_server()
+    
+    #subprocess.Popen(["litellm", "--model", "ollama/mistral"])
+    time.sleep(5)
     sentences = sent_tokenize(story)
     print("sentences:\n" + '\n'.join(sentences))
     swapped_sentences = []
@@ -211,9 +203,12 @@ def story_to_sd_prompts(story):
     for replaced_pronouns_sentence in replaced_pronouns_sentences:        
         sd_prompts.append(process_description(replaced_pronouns_sentence, replaced_pronouns_sentences, story_board_creator_key_description))
         sd_prompts.append(process_description(replaced_pronouns_sentence, replaced_pronouns_sentences, story_board_creator_picture_description))
-        sd_prompts.append(process_description(replaced_pronouns_sentence, replaced_pronouns_sentences, story_board_creator_minor_description))
+        #sd_prompts.append(process_description(replaced_pronouns_sentence, replaced_pronouns_sentences, story_board_creator_minor_description))
         sd_prompts.append(process_description(replaced_pronouns_sentence, replaced_pronouns_sentences, story_board_creator_important_object_description))
 
+    #shut down llm server
+    #subprocess.run(["pkill", "-f", "litellm"])
+    LMstudio_RPA.stop_server()
     #prompts = story_to_sd_prompts(story)
     print("prompts", sd_prompts)
     for sd_prompt in sd_prompts:

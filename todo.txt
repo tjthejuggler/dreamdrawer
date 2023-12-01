@@ -1,3 +1,13 @@
+11/30/23
+I don't need to send the whole story as a prompt at once. Just a few sentences before and after.    
+
+11/26/23
+it should create less prompts so it can be done faster
+
+prompts should never be cut off and missing the final "color photogrpahy" ending
+
+after accepted images have been selected they should be passed through an upscaler process
+
 11/25/23
 get it to split on commas and make new sentences from each different part of the sentence.
 
