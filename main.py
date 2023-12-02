@@ -13,8 +13,9 @@ import json
 import os
 from ask_local_llm import send_prompt_to_llm
 import time
+import telegram_service
 
-import LMstudio_RPA
+#import LMstudio_RPA
 
 # Get the home directory of the current user
 home_directory = os.path.expanduser('~')
@@ -124,7 +125,7 @@ def process_description(sentence, swapped_sentences, description_function):
         description = shorten_this_prompt(description)
     return(description + ",realistic color photograph")
 
-def generate_images(prompt, num_images=4, batch_size=2):
+def generate_images(prompt, num_images=1, batch_size=1):
     # Optimizing CUDA operations
     torch.backends.cudnn.benchmark = True
 
@@ -184,10 +185,11 @@ def split_string_on_commas(input_string):
 # Main pipeline function
 def story_to_sd_prompts(story):
     # Start the LLM server
-    LMstudio_RPA.start_server()
+    # if not LMstudio_RPA.is_server_running():
+    #     LMstudio_RPA.start_server()
     
     #subprocess.Popen(["litellm", "--model", "ollama/mistral"])
-    time.sleep(5)
+    #time.sleep(5)
     sentences = sent_tokenize(story)
     print("sentences:\n" + '\n'.join(sentences))
     swapped_sentences = []
@@ -206,13 +208,17 @@ def story_to_sd_prompts(story):
         #sd_prompts.append(process_description(replaced_pronouns_sentence, replaced_pronouns_sentences, story_board_creator_minor_description))
         sd_prompts.append(process_description(replaced_pronouns_sentence, replaced_pronouns_sentences, story_board_creator_important_object_description))
 
-    #shut down llm server
-    #subprocess.run(["pkill", "-f", "litellm"])
-    LMstudio_RPA.stop_server()
+
+    orca_mini = subprocess.Popen(["ollama", "run", "orca-mini:3b"], preexec_fn=os.setsid)
+    time.sleep(5)
+    orca_mini.terminate()
+
     #prompts = story_to_sd_prompts(story)
     print("prompts", sd_prompts)
     for sd_prompt in sd_prompts:
         generate_images(sd_prompt)
+
+    telegram_service.send_telegram_text_as_me_to_bot("Finished generating images for story")
 
 
 story_to_sd_prompts(story)

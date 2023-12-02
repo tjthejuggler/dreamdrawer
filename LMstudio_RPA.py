@@ -1,6 +1,12 @@
 import pyautogui
 import time
 
+def is_server_running():
+    LMstudio_activity_icon = pyautogui.locateCenterOnScreen('/home/lunkwill/projects/Lemmy_mod_tools/LMstudio_activity_icon.png')
+    if LMstudio_activity_icon is not None:
+        return True
+    else:
+        return False
 
 def start_server():
     time.sleep(2)

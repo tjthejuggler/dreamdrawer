@@ -10,7 +10,7 @@ import time
 
 
 #you have to run this command in terminal- litellm --model ollama/mistral
-def send_prompt_to_llm_litellm(user_prompt, system_prompt = None):
+def send_prompt_to_llm(user_prompt, system_prompt = None):
     server_started_now = False
     url = "http://0.0.0.0:8000"
     # Check if the server is running
@@ -47,11 +47,11 @@ def send_prompt_to_llm_litellm(user_prompt, system_prompt = None):
     response_json = response.json()
     # Get the content string
 
-    if server_started_now:
-        # Kill the server
-        subprocess.run(["pkill", "-f", "litellm"])
-        print("Server killed")
-        time.sleep(5)
+    # if server_started_now:
+    #     # Kill the server
+    #     subprocess.run(["pkill", "-f", "litellm"])
+    #     print("Server killed")
+    #     time.sleep(5)
     return response_json['choices'][0]['message']['content']
 
 #print(send_prompt_to_llm("What is the largest animal?"))
@@ -67,7 +67,7 @@ def send_prompt_to_llm_litellm(user_prompt, system_prompt = None):
 
 #!!DEPREICATED!!
 #if for some reason we want to go back to doing this with local llm then we can use this and we need to uncomment the import statements above
-def send_prompt_to_llm(system_prompt, user_prompt):
+def send_prompt_to_llm_orig(system_prompt, user_prompt):
     
     url = "http://localhost:1234/v1/chat/completions"
     #url = "http://0.0.0.0:8000"
