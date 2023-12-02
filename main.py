@@ -4,16 +4,14 @@ nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
 from pprint import pprint
 import re
-from diffusers import DiffusionPipeline
-import torch
-from torchvision.utils import save_image
-from torchvision import transforms
 import sys
 import json
 import os
-from ask_local_llm import send_prompt_to_llm
 import time
+
+from ask_local_llm import send_prompt_to_llm
 import telegram_service
+import ComfyUI_image_gen
 
 # Get the home directory of the current user
 home_directory = os.path.expanduser('~')
@@ -90,29 +88,6 @@ def process_description(sentence, swapped_sentences, description_function):
         description = shorten_this_prompt(description)
     return(description + ",realistic color photograph")
 
-def generate_images(prompt, num_images=1, batch_size=1):
-    # Optimizing CUDA operations
-    torch.backends.cudnn.benchmark = True
-    pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
-    pipe.to("cuda")
-
-    for batch_start in range(0, num_images, batch_size):
-        batch_end = min(batch_start + batch_size, num_images)
-        batch_prompts = [prompt] * (batch_end - batch_start)
-        images = pipe(prompt=batch_prompts, num_inference_steps=30).images
-
-        for i, image in enumerate(images, start=batch_start):
-            # Convert the PIL Image to a PyTorch tensor
-            transform = transforms.ToTensor()
-            tensor = transform(image)
-            # Create a truncated filename for each image
-            filename = f"{prompt[:50].replace(' ', '_')}_{i}_{batch_start}.png"
-            # Save each tensor to a file
-            save_image(tensor, home_directory + f"/projects/dreamdrawer/output_images/{filename}")
-
-        # Clear CUDA cache
-        torch.cuda.empty_cache()
-
 # Redefining the function to split the string on commas outside of double quotes
 def split_string_on_commas(input_string):
     # List to store the split strings
@@ -176,7 +151,11 @@ def story_to_sd_prompts(story):
     #prompts = story_to_sd_prompts(story)
     print("prompts", sd_prompts)
     for sd_prompt in sd_prompts:
-        generate_images(sd_prompt)
+        #ComfyUI_image_gen.generate_images_XL(sd_prompt)
+        ComfyUI_image_gen.generate_images_XL_turbo(sd_prompt)
+    
+    #this is only for XL_turbo - but why? shouldnt it also be for XL?
+    subprocess.run(["pkill", "-f", "/home/lunkwill/projects/ComfyUI/main.py"], check=True)
 
     telegram_service.send_telegram_text_as_me_to_bot("Finished generating dr. images")
 
