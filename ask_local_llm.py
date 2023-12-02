@@ -1,30 +1,19 @@
 import requests
-# from diffusers import DiffusionPipeline
-# from torchvision.utils import save_image
-# from torchvision import transforms
 import json
 import subprocess
 import time
-#THIS CODE USES LITELLAMA IF IT IS RUNNING, AND IF IT ISN'T RUNNING THEN IT STARTS IT AND STOPS IT AFTERWARDS
-
-
 
 #you have to run this command in terminal- litellm --model ollama/mistral
 def send_prompt_to_llm(user_prompt, system_prompt = None):
-    server_started_now = False
-    url = "http://0.0.0.0:8000"
-    # Check if the server is running
-    try:
+    url = "http://0.0.0.0:8000"    
+    try: # Check if the server is running
         response = requests.get(url)
         if response.status_code == 200:
-            print("Server is running")
-            
+            print("Server is running")            
     except requests.exceptions.RequestException as err:
-        server_started_now = True
         print("Server is not running, starting it now...")
         subprocess.Popen(["litellm", "--model", "ollama/mistral"])
         time.sleep(5)
-
     url = "http://0.0.0.0:8000/chat/completions"
     headers = {"Content-Type": "application/json"}
     if system_prompt is None:
@@ -43,15 +32,7 @@ def send_prompt_to_llm(user_prompt, system_prompt = None):
             ]
         }
     response = requests.post(url, headers=headers, data=json.dumps(data))
-    # Convert the response to JSON
     response_json = response.json()
-    # Get the content string
-
-    # if server_started_now:
-    #     # Kill the server
-    #     subprocess.run(["pkill", "-f", "litellm"])
-    #     print("Server killed")
-    #     time.sleep(5)
     return response_json['choices'][0]['message']['content']
 
 #print(send_prompt_to_llm("What is the largest animal?"))
