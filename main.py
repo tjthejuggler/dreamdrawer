@@ -151,11 +151,11 @@ def story_to_sd_prompts(story):
     #prompts = story_to_sd_prompts(story)
     print("prompts", sd_prompts)
     for sd_prompt in sd_prompts:
-        #ComfyUI_image_gen.generate_images_XL(sd_prompt)
-        ComfyUI_image_gen.generate_images_XL_turbo(sd_prompt)
-    
+        ComfyUI_image_gen.generate_images_XL(sd_prompt)
+        #ComfyUI_image_gen.generate_images_XL_turbo(sd_prompt)
+
     #this is only for XL_turbo - but why? shouldnt it also be for XL?
-    subprocess.run(["pkill", "-f", "/home/lunkwill/projects/ComfyUI/main.py"], check=True)
+    #subprocess.run(["pkill", "-f", "/home/lunkwill/projects/ComfyUI/main.py"], check=True)
 
     telegram_service.send_telegram_text_as_me_to_bot("Finished generating dr. images")
 

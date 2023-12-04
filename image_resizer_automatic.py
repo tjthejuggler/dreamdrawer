@@ -89,7 +89,7 @@ def process_images(image_paths, canvas_width, canvas_height, output_directory, o
         if originals_backed_up_dir:
             if not os.path.exists(originals_backed_up_dir):
                 os.makedirs(originals_backed_up_dir)
-            os.rename(image_path, os.path.join(originals_backed_up_dir, os.path.basename(image_path)))
+            os.rename(image_path, os.path.join(originals_backed_up_dir, os.path.basename(new_image_path)))
 
         #delete the original image
         #os.remove(image_path)
