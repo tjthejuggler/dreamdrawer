@@ -9,7 +9,7 @@ import json
 import os
 import time
 
-from ask_local_llm import send_prompt_to_llm
+from ask_local_llm import *
 import telegram_service
 import ComfyUI_image_gen
 
@@ -118,31 +118,43 @@ def split_string_on_commas(input_string):
 
     return result
 
+def check_if_sentence_contains_pronouns(sentence):
+    pronouns = ['i', 'i\'m', 'me', 'we', 'us', 'my', 'mine', 'our', 'ours', 'he', 'she', 'they', 'them', 'his', 'her', 'hers', 'their', 'theirs']
+    sentence = sentence.lower()
+    for pronoun in pronouns:
+        if pronoun in sentence.split():
+            return True
+    return False
+
 # Main pipeline function
 def story_to_sd_prompts(story):
     sentences = sent_tokenize(story)
     print("sentences:\n" + '\n'.join(sentences))
     swapped_sentences = []
     replaced_pronouns_sentences = []
+    connect_to_llm()
     for sentence in sentences:
         if check_if_first_person_pronoun(sentence):
             sentence = me_swapped_intelligently(sentence)
         sentence = automated_name_swapping(sentence)
         swapped_sentences.append(sentence)
     for swapped_sentence in swapped_sentences:
-        replaced_pronouns_sentences.append(send_prompt(swapped_sentence, ' '.join(swapped_sentences), "You are an expert editor. You follow directions exactly. You only ever say a single sentence. You Receive a story and a sentence. You replace pronouns in the sentence with any relevant specifics from the story.", "Replaced pronouns"))
+        if check_if_sentence_contains_pronouns(swapped_sentence):
+            replaced_pronouns_sentences.append(send_prompt(swapped_sentence, ' '.join(swapped_sentences), "You are an expert editor. You follow directions exactly. You only ever say a single sentence. You Receive a story and a sentence. You replace pronouns in the sentence with any relevant specifics from the story. You respond with only the corrected sentence.", "Replaced pronouns"))
+        else:
+            replaced_pronouns_sentences.append(swapped_sentence)
     sd_prompts = []
     for replaced_pronouns_sentence in replaced_pronouns_sentences:
         story = ' '.join(replaced_pronouns_sentences)
         sd_prompts.append(send_prompt(replaced_pronouns_sentence, story, 
-            "You are a creative scene creator. You follow directions exactly. You only ever say a single sentence. You are an artist. You receive a background story and a specific sentence and you respond with a visual description that portrays a single picture that could be taken of a scene from that specific sentence.",
-            "Key description"))
+            "You are a creative visual scene creator. You will receive a background story and a specific sentence. By using the context, you create a visual of description of the specific sentence. Your response is an unlabeled list of of short, comma separated phrases. Your unlabeled response includes key information such as setting, characters, actions, objects. You only respond with a single, unlabeled list of short, comma separated phrases.",
+            "Scene phrases 1: "))
         sd_prompts.append(send_prompt(replaced_pronouns_sentence, story, 
-            "You are a creative story board creator. You follow directions exactly. You only ever say a single sentence. You are an artist. You receive a background story and a specific sentence and you respond with a visual description that encompases a key aspect of that specific sentence.",
-            "Key description"))
+            "You create a list of short visual descriptions about a sentence that you are given. Your focus is the sentence, but you are also given a background story in case you need help filling in any missing context. You include everything that would be needed to reconstruct the sentence visually. You only respond with a single, unlabeled list of short, comma separated phrases.",
+            "Visual description 2: "))
         sd_prompts.append(send_prompt(replaced_pronouns_sentence, story, 
-            "You are an image description creator. You follow directions exactly. You only ever say a single discription. You never write a complete sentence. You receive a background story and a specific sentence and you respond with a visual description of an important object that would be found in this scene.",
-            "Important object description"))
+            "You are a creative scene creator. You follow directions exactly. You only ever say a single sentence. You are an artist. You receive a background story and a specific sentence and you respond with a visual description that portrays a single picture that could be taken of a scene from that specific sentence. You only respond with one sentence", 
+            "Original Visual Scene 3: "))
 
     orca_mini = subprocess.Popen(["ollama", "run", "orca-mini:3b"], preexec_fn=os.setsid)
     time.sleep(5)

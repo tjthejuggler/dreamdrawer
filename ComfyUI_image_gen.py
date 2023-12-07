@@ -12,7 +12,7 @@ import os
 
 home_directory = os.path.expanduser('~')
 
-def generate_images_XL(prompt, num_images=4, batch_size=1):
+def generate_images_XL(prompt, num_images=3, batch_size=1):
     # Optimizing CUDA operations
     torch.backends.cudnn.benchmark = True
     pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, use_safetensors=True, variant="fp16")

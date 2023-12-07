@@ -3,17 +3,22 @@ import json
 import subprocess
 import time
 
+
+def connect_to_llm():
+    subprocess.Popen(["litellm", "--model", "ollama/mistral"])
+    time.sleep(10)
+
 #you have to run this command in terminal- litellm --model ollama/mistral
 def send_prompt_to_llm(user_prompt, system_prompt = None):
-    url = "http://0.0.0.0:8000"    
-    try: # Check if the server is running
-        response = requests.get(url)
-        if response.status_code == 200:
-            print("Server is running")            
-    except requests.exceptions.RequestException as err:
-        print("Server is not running, starting it now...")
-        subprocess.Popen(["litellm", "--model", "ollama/mistral"])
-        time.sleep(5)
+    # url = "http://0.0.0.0:8000"    
+    # try: # Check if the server is running
+    #     response = requests.get(url)
+    #     if response.status_code == 200:
+    #         print("Server is running")            
+    # except requests.exceptions.RequestException as err:
+    #     print("Server is not running, starting it now...")
+    #     subprocess.Popen(["litellm", "--model", "ollama/neural-chat:7b-v3.2-fp16"])
+    #     time.sleep(5)
     url = "http://0.0.0.0:8000/chat/completions"
     headers = {"Content-Type": "application/json"}
     if system_prompt is None:
