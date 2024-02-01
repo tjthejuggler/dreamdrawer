@@ -1,3 +1,7 @@
+1/12/24
+
+dreamdrawer should always include a location based on the context of the story.
+
 11/30/23
 I don't need to send the whole story as a prompt at once. Just a few sentences before and after.    
 

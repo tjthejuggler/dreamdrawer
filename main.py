@@ -1,6 +1,6 @@
 import subprocess
 import nltk
-nltk.download('punkt')
+#nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
 from pprint import pprint
 import re
@@ -12,6 +12,11 @@ import time
 from ask_local_llm import *
 import telegram_service
 import ComfyUI_image_gen
+
+def install_pydantic():
+    subprocess.run(["pip", "install", "--upgrade", "pydantic"], check=True)
+    print("installed pydantic")
+install_pydantic()
 
 # Get the home directory of the current user
 home_directory = os.path.expanduser('~')
@@ -74,19 +79,20 @@ def send_prompt(sentence, story, system_prompt, response_label):
     combined_sentence = 'Background story:\n' + story + '\n\nSpecific Sentence: ' + sentence + '\n\nRespond only with a single sentence.'
     response = send_prompt_to_llm(combined_sentence, system_prompt)
     print("Original sentence:\n", sentence, f"\n{response_label} response:\n", response, "\n\n")
+    #processed_response = process_description(response)
     return response
 
 def shorten_this_prompt(sentence):
     system_prompt = "You are a text editor. You follow directions exactly. You only ever say a single sentence. You receive some text and you respond with less than 350 characters."
     shortened_sentence = send_prompt_to_llm(sentence, system_prompt)
-    print("Original sentence:\n", sentence,"\nShortened sentence:\n", shortened_sentence, "\n\n")
+    print("Original sentence:\n", sentence,"\n\nShortened sentence:\n", shortened_sentence, "\n\n")
     return shortened_sentence
 
-def process_description(sentence, swapped_sentences, description_function):
-    description = description_function(sentence, ' '.join(swapped_sentences))
-    if len(description) > 350:
-        description = shorten_this_prompt(description)
-    return(description + ",realistic color photograph")
+def process_description(response):
+    #description = description_function(sentence, ' '.join(swapped_sentences))
+    if len(response) > 350:
+        response = shorten_this_prompt(response)
+    return(response + ",realistic color photograph")
 
 # Redefining the function to split the string on commas outside of double quotes
 def split_string_on_commas(input_string):
@@ -144,26 +150,52 @@ def story_to_sd_prompts(story):
         else:
             replaced_pronouns_sentences.append(swapped_sentence)
     sd_prompts = []
-    for replaced_pronouns_sentence in replaced_pronouns_sentences:
-        story = ' '.join(replaced_pronouns_sentences)
+    num_sentences_before_after = 1  # Adjust this variable to change the number of sentences before and after
+    print("replaced_pronouns_sentences:\n" + '\n'.join(replaced_pronouns_sentences))
+    for i, replaced_pronouns_sentence in enumerate(replaced_pronouns_sentences):
+        # Get the sentences before and after the current one
+        start = max(0, i - num_sentences_before_after)
+        end = min(len(replaced_pronouns_sentences), i + num_sentences_before_after + 1)
+        surrounding_sentences = replaced_pronouns_sentences[start:end]
+        
+        # Combine the sentences into the story
+        story = ' '.join(surrounding_sentences)
         sd_prompts.append(send_prompt(replaced_pronouns_sentence, story, 
-            "You are a creative visual scene creator. You will receive a background story and a specific sentence. By using the context, you create a visual of description of the specific sentence. Your response is an unlabeled list of of short, comma separated phrases. Your unlabeled response includes key information such as setting, characters, actions, objects. You only respond with a single, unlabeled list of short, comma separated phrases.",
+            "You are a creative visual scene creator. You will receive a background story and a specific sentence. By using the context, you create a visual of description of the specific sentence. Your response is an unlabeled list of of short, comma separated phrases. Your unlabeled response includes key information such as setting, characters, actions, objects. respond with a single, unlabeled list of short, comma separated phrases. Only describe the target sentence. ",
             "Scene phrases 1: "))
         sd_prompts.append(send_prompt(replaced_pronouns_sentence, story, 
-            "You create a list of short visual descriptions about a sentence that you are given. Your focus is the sentence, but you are also given a background story in case you need help filling in any missing context. You include everything that would be needed to reconstruct the sentence visually. You only respond with a single, unlabeled list of short, comma separated phrases.",
+            "You create a list of short visual descriptions about a sentence that you are given. Your focus is the sentence, but you are also given a background story in case you need help filling in any missing context. You include everything that would be needed to reconstruct the sentence visually. You only respond with a single, unlabeled list of short, comma separated phrases. Only describe the target sentence.",
             "Visual description 2: "))
         sd_prompts.append(send_prompt(replaced_pronouns_sentence, story, 
-            "You are a creative scene creator. You follow directions exactly. You only ever say a single sentence. You are an artist. You receive a background story and a specific sentence and you respond with a visual description that portrays a single picture that could be taken of a scene from that specific sentence. You only respond with one sentence", 
+            "You are a creative scene creator. You follow directions exactly. You only ever say a single sentence. You are an artist. You receive a background story and a specific sentence and you respond with a visual description that portrays a single picture that could be taken of a scene from that specific sentence. You only respond with one sentence.", 
             "Original Visual Scene 3: "))
 
+    processed_sd_prompts = []
+    for sd_prompt in sd_prompts:
+        #replace any special characters that might cause problems
+        sd_prompt = sd_prompt.replace('.', '')
+        sd_prompt = sd_prompt.replace('*', ',')
+        sd_prompt = sd_prompt.replace('\n', ' ')
+        processed_sd_prompts.append(process_description(sd_prompt))
+
+    # this is the model that is being run just to lower the ram usage after we use the better model
     orca_mini = subprocess.Popen(["ollama", "run", "orca-mini:3b"], preexec_fn=os.setsid)
     time.sleep(5)
     orca_mini.terminate()
 
-    #prompts = story_to_sd_prompts(story)
-    print("prompts", sd_prompts)
-    for sd_prompt in sd_prompts:
-        ComfyUI_image_gen.generate_images_XL(sd_prompt)
+    #save the prompts to a file
+    with open (home_directory + "/projects/dreamdrawer/processed_sd_prompts.txt", "w") as f:
+        f.write("\n".join(processed_sd_prompts))
+
+
+    print("PROCESSED_SD_PROMPTS:\n\n")
+    print("\n".join(processed_sd_prompts))
+    prompts_printed = 0
+    for processed_sd_prompt in processed_sd_prompts:
+        print(str(prompts_printed) + "/" + str(len(processed_sd_prompts)))
+        print(processed_sd_prompt)
+        ComfyUI_image_gen.generate_images_XL(processed_sd_prompt)
+        prompts_printed += 1
         #ComfyUI_image_gen.generate_images_XL_turbo(sd_prompt)
 
     #this is only for XL_turbo - but why? shouldnt it also be for XL?

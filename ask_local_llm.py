@@ -5,7 +5,10 @@ import time
 
 
 def connect_to_llm():
-    subprocess.Popen(["litellm", "--model", "ollama/mistral"])
+    #subprocess.Popen(["litellm", "--model", "ollama/mistral"])
+    subprocess.Popen(["litellm", "--model", "ollama/solar"])
+    #subprocess.Popen(["litellm", "--model", "ollama/mixtral"])
+    
     time.sleep(10)
 
 #you have to run this command in terminal- litellm --model ollama/mistral

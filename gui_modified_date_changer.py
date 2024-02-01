@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 from PIL import Image, ImageTk
+import pyautogui
 import os
 import time
 from image_resizer_automatic import process_images
-import os
 
 # Get the home directory of the current user
 home_directory = os.path.expanduser('~')
@@ -15,10 +15,12 @@ class FileArrangerApp:
         root.title("File Arranger with Image Viewer and Keyboard Reordering")
 
         # Frame for the file list and image viewer
-        self.file_frame = tk.Frame(root, width=400, height=300, bg="white")
-        self.image_frame = tk.Frame(root, width=400, height=300)
+        self.file_frame = tk.Frame(root, width=40, height=30, bg="white")
+        self.image_frame = tk.Frame(root, width=40, height=30)
         self.file_frame.pack(side="left", fill="both", expand=True)
         self.image_frame.pack(side="right", fill="both", expand=True)
+
+        
 
         # Instructions label
         self.label = tk.Label(self.file_frame, text="Drag and drop files here. Use arrow keys to reorder.")
@@ -176,6 +178,16 @@ class FileArrangerApp:
 
 # Initialize the application
 root = TkinterDnD.Tk()
+
+# Get the current mouse position
+mouse_x, mouse_y = pyautogui.position()
+
+# Set the position of the window to the mouse position
+root.geometry(f'+{mouse_x}+{mouse_y}')
+
+print("root.geometry", root.geometry())
+print("mouse_x", mouse_x)
+print("mouse_y", mouse_y)
 
 # Keep the window always on top
 root.attributes('-topmost', True)
