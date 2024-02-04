@@ -11,9 +11,20 @@ import time
 import os
 
 home_directory = os.path.expanduser('~')
+def check_and_stop_service(service_name):
+    # Check if the service is running
+    result = subprocess.run(['systemctl', 'is-active', service_name], stdout=subprocess.PIPE)
+    if result.stdout.decode('utf-8').strip() == 'active':
+        # If the service is running, stop it
+        subprocess.run(['sudo', 'systemctl', 'stop', service_name])
 
 def generate_images_XL(prompt, num_images=2, batch_size=1):
+    #if ollama.service is running, then stop it systemctl stop ollama.service
+    #check_and_stop_service('ollama.service')
+    print("generating prompt: ", prompt)
+
     # Optimizing CUDA operations
+    filepaths = []
     torch.backends.cudnn.benchmark = True
     pipe = DiffusionPipeline.from_pretrained("/home/lunkwill/.cache/huggingface/hub/models--stabilityai--stable-diffusion-xl-base-1.0/snapshots/462165984030d82259a11f4367a4eed129e94a7b", torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
     pipe.to("cuda")
@@ -34,10 +45,16 @@ def generate_images_XL(prompt, num_images=2, batch_size=1):
             filename = filename.replace("/", "_")
             filename = filename.replace("\\", "_")
             # Save each tensor to a file
-            save_image(tensor, home_directory + f"/projects/dreamdrawer/output_images/{filename}")
+            filepath = home_directory + f"/projects/dreamdrawer/output_images/{filename}"
+            filepaths.append(filepath)
+            save_image(tensor, filepath)
 
         # Clear CUDA cache
         torch.cuda.empty_cache()
+
+    return filepaths
+
+#generate_images_XL("house on a hill")
 
 def queue_prompt(prompt_workflow):
     p = {"prompt": prompt_workflow}
@@ -111,4 +128,4 @@ def generate_images_XL_turbo(incoming_text):
 
     #return filepaths
 
-#generate_images_XL_turbo("a guy walks into a coffee shop. he orders a coffee. he sits down at a table. he drinks his coffee. he leaves the coffee shop.")
+# generate_images_XL("a guy walks into a coffee shop. he orders a coffee. he sits down at a table. he drinks his coffee. he leaves the coffee shop.")

@@ -8,11 +8,12 @@ def connect_to_llm():
     #subprocess.Popen(["litellm", "--model", "ollama/mistral"])
     subprocess.Popen(["litellm", "--model", "ollama/solar"])
     #subprocess.Popen(["litellm", "--model", "ollama/mixtral"])
+    #subprocess.Popen(["ollama", "serve"])
     
     time.sleep(10)
 
 #you have to run this command in terminal- litellm --model ollama/mistral
-def send_prompt_to_llm(user_prompt, system_prompt = None):
+def send_prompt_to_llm(user_prompt, system_prompt = None): #IT IS LIKE IT IS LOOKING FOR SOLAR HERE FOR SOME REASON? CHECK LOG
     # url = "http://0.0.0.0:8000"    
     # try: # Check if the server is running
     #     response = requests.get(url)

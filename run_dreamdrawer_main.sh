@@ -10,7 +10,7 @@ clipboard_content=$(xclip -o)
 # If your .sh script is in the same directory as your Python script, you can use:
 # script_path="./main.py"
 # Otherwise, use the absolute path with $HOME
-script_path="$HOME/projects/dreamdrawer/main.py"
+script_path="/home/lunkwill/projects/dreamdrawer/main.py"
 
 # Run the Python script with the clipboard content as an argument
 python "$script_path" "$clipboard_content"
