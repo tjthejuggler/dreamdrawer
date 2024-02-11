@@ -33,6 +33,7 @@ import ComfyUI_image_gen
 import ask_ollama
 
 import kill_ollama
+import getpass
 
 def install_pydantic():
     subprocess.run(["pip", "install", "--upgrade", "pydantic"], check=True)
@@ -164,74 +165,98 @@ def check_and_start_service(service_name):
 
 # Main pipeline function
 def story_to_sd_prompts(story):
-    sudo_password = input("Enter sudo password: ")
+    sudo_password = getpass.getpass("Enter sudo password: ")
+    
     sentences = sent_tokenize(story)
     print("sentences:\n" + '\n'.join(sentences))
-    swapped_sentences = []
-    #replaced_pronouns_sentences = []
-    #connect_to_llm()
-    for sentence in sentences:
-        if check_if_first_person_pronoun(sentence):
-            sentence = me_swapped_intelligently(sentence)
-        sentence = automated_name_swapping(sentence)
-        swapped_sentences.append(sentence)
-    #combine swapped_sentences into a single string
-    swapped_sentences = ' '.join(swapped_sentences)
-    json_descriptions = ask_ollama.get_json_descriptions_from_story(swapped_sentences)
-#     json_descriptions = ''' {
-#   "a 30-year-old man with long blond hair finds himself in a location surrounded by other individuals whom he doesn't have particularly close relationships with.": "A lone figure with long, flowing blond hair stands amidst a group of unfamiliar faces, exuding a sense of separation and aloofness.",
-#   "there are kids there": "A backdrop of children playing in the distance, their laughter audible, adding vibrant energy to the scene.",
-#   "a 30-year old man with long blond hair has two nice gel pens that he really likes.": "Admiring a pair of exquisite gel pens, gleaming under the light, treasured by their long-haired owner for their distinctiveness.",
-#   "a 30-year-old man with long blond hair was delighted to find a pack of gel pens that he had been looking for, discarded between his car seats.": "A fortunate discovery of a cherished pack of gel pens, abandoned and overlooked between the car seats, now embraced by its grateful owner.",
-#   "but they are expensive": "The two valuable gel pens stand out among their mundane surroundings, symbolizing something precious yet pricey.",
-#   "there are some kids there": "Innocent children in the background, blissfully unaware of the value and desire surrounding the pair of unique gel pens.",
-#   "as a 30-year-old man with long blond hair, i understand your concern about protecting your expensive gel pens from potential damage due to use by young children.": "A thoughtful long-haired individual contemplating the welfare of their valuable gel pens and considering ways to safeguard them from the unintentional harm caused by curious young hands.",
-#   "to prevent any possible issues and preserve your collection of nice gel pens, you could consider keeping them in a safe place out of reach for the kids.": "A visualization of safely storing the precious gel pens on a high shelf or within a secure box, away from children's grasp to protect their integrity.",
-#   "alternatively, provide separate, less expensive pens specifically designated for their use": "A display of affordable pens arranged neatly in a container, reserved and accessible just for young creatives to explore their artistic talents.",
-#   "they press too hard and mess up the tips of the gel pens": "An illustration of children gripping gel pens with excessive force, causing the tips to become misshapen or damaged, while their long-haired guardian looks on disheartened.",
-#   "the gel pen tips get flattened": "A close-up view of a once pristine gel pen tip now distorted and flattened due to rough handling by young artists, symbolizing the importance of responsible care.",
-#   "a 30-year-old man with long blond hair tries out the pens one by one to examine their functionality and performance.": "A diligent long-haired individual carefully testing each gel pen in turn, ensuring they perform as expected, exuding a sense of dedication towards preserving their quality.",
-#   "he notices that some of them are severely malfunctioning, leaking ink or failing to write smoothly": "An image of the disappointed long-haired person discovering an array of gel pens that have fallen short of expectations due to various performance issues.",
-#   "the 30-year-old man continues testing each pen, mentally taking note of which ones need replacement in his collection": "A determination on the part of the long-haired individual to rectify the subpar gel pens by methodically evaluating their condition and making mental notes for future improvements.",
-#   "the 30-year-old man with long blond hair is feeling a bit disheartened as he discovers that his initial harvest from the coconut tree is lesser than anticipated": "A picture of disappointment etched on the long-haired person's face upon realizing the meager yield from the coconut tree, yet maintaining hope and optimism for future harvests."
-# }'''
-    
+
+    # Comment this to let the copied in dream get turned into a json
+    with open (home_directory + "/projects/dreamdrawer/json_descriptions20240211-134043.json", "r") as f:
+        json_descriptions = f.read()
+
+    if not json_descriptions:
+        swapped_sentences = []
+        #replaced_pronouns_sentences = []
+        #connect_to_llm()
+        for sentence in sentences:
+            if check_if_first_person_pronoun(sentence):
+                sentence = me_swapped_intelligently(sentence)
+            sentence = automated_name_swapping(sentence)
+            swapped_sentences.append(sentence)
+        #combine swapped_sentences into a single string
+        swapped_sentences = ' '.join(swapped_sentences)
+        json_descriptions = ask_ollama.get_json_descriptions_from_story(swapped_sentences)
+
     #make this be a json if it isn't json_descriptions
     json_descriptions = json.loads(json_descriptions)
+    #save the json_descriptions to a file that uses the current time and date in the name
+    current_time = time.strftime("%Y%m%d-%H%M%S")
+
+    with open (home_directory + "/projects/dreamdrawer/json_descriptions"+current_time+".json", "w") as f:
+        json.dump(json_descriptions, f)
     print("json_descriptions:")
     print(json_descriptions)
 
     #iterate through the json_descriptions and replace the pronouns with the descriptions
     item_count = 0
-    for key, value in json_descriptions.items():
-        image_looks_good = False
-        image_prompt = value
-        image_generation_attempts = 0
-        item_count += 1
-        while not image_looks_good and image_generation_attempts < 3:
-            print('-----item ' + str(item_count) + '/' + str(len(json_descriptions)) + ' gen atmpt: ' + str(image_generation_attempts) + ' image_prompt: ' + image_prompt)
+    passed_images = 0
+    generation_method = 1
+    if generation_method == 0:
+        for key, value in json_descriptions.items():
+            image_looks_good = False
+            image_prompt = value
+            original_sentence = key
+            image_generation_attempts = 0
+            item_count += 1
+            while not image_looks_good and image_generation_attempts < 3:
+                
+                print('-----item ' + str(item_count) + '/' + str(len(json_descriptions)) + ' gen atmpt: ' + str(image_generation_attempts) + ' image_prompt: ' + image_prompt)
+                prompt_to_generate = ask_ollama.prompt_generator(image_prompt, original_sentence)
+                prompt_to_generate = prompt_to_generate + ", realistic color photograph"
+                #ask_ollama.reduce_memory_usage()
+                kill_ollama.kill_ollama_processes(sudo_password)
+                #time.sleep(10)
+                filepath = ComfyUI_image_gen.generate_images_XL(prompt_to_generate)
+                print('here is the filepath', filepath)
+                #time.sleep(10)
+                #check_and_start_service('ollama.service')
+                #ask_ollama.reduce_memory_usage()
+                image_description = ask_ollama.get_image_description_ollama(filepath[0])
+                #reduce_memory_usage()
+                #print("image_description", image_description)
+                question = "Does a photo with this description: '"+image_description+"' make sense as a visual representation of this line '"+key+"' in this story '"+swapped_sentences+"'?"
+                image_quality_response = ask_ollama.image_description_checker(question)
+                #print('image_quality_response', image_quality_response)
+                if "pass" in image_quality_response:
+                    print('PASS')
+                    image_looks_good = True
+                    passed_images += 1
+                else:
+                    image_prompt = ask_ollama.prompt_improver("This prompt '"+image_prompt+"' does not generate a good enough image for this reason: '"+image_quality_response+"'. Please slightly adjust the original prompt with the feedback in mind. Respond with only the modified prompt.")
+                    print('NEW IMAGE PROMPT\n', image_prompt)
+                    image_generation_attempts += 1
+        print("passed_images", passed_images)
+    if generation_method == 1:
+        list_of_list_of_prompts = []
+        item_count = 0
+        for key, value in json_descriptions.items():
+            image_looks_good = False
+            image_prompt = value
+            original_sentence = key
+            item_count += 1
+            print('-----prompt made ' + str(item_count) + '/' + str(len(json_descriptions)) + ' image_prompt: ' + image_prompt)
+            prompt_to_generate = ask_ollama.prompt_generator(image_prompt, original_sentence)
+            prompt_to_generate = prompt_to_generate + ", realistic color photograph"
+            list_of_list_of_prompts.append(prompt_to_generate)
             #ask_ollama.reduce_memory_usage()
-            kill_ollama.kill_ollama_processes(sudo_password)
-            #time.sleep(10)
-            filepath = ComfyUI_image_gen.generate_images_XL(image_prompt)
-            print('here is the filepath', filepath)
-            #time.sleep(10)
-            #check_and_start_service('ollama.service')
-            #ask_ollama.reduce_memory_usage()
-            image_description = ask_ollama.get_image_description_ollama(filepath[0])
-            #reduce_memory_usage()
-            #print("image_description", image_description)
-            question = "Does a photo with this description: '"+image_description+"' make sense as a visual representation of this line '"+key+"' in this story '"+swapped_sentences+"'?"
-            image_quality_response = ask_ollama.image_description_checker(question)
-            #print('image_quality_response', image_quality_response)
-            if "pass" in image_quality_response:
-                print('PASS')
-                image_looks_good = True
-            else:
-                image_prompt = ask_ollama.prompt_improver("This prompt '"+image_prompt+"' does not generate a good enough image for this reason: '"+image_quality_response+"'. Please slightly adjust the original prompt with the feedback in mind. Respond with only the modified prompt.")
-                print('NEW IMAGE PROMPT\n', image_prompt)
-                image_generation_attempts =+ 1
 
+        kill_ollama.kill_ollama_processes(sudo_password)
+        item_count = 0
+        for prompt in list_of_list_of_prompts:
+            item_count += 1
+            print('-----art made ' + str(item_count) + '/' + str(len(json_descriptions)) + ' image_prompt: ' + image_prompt)
+            #time.sleep(10)
+            filepath = ComfyUI_image_gen.generate_images_XL(prompt)
 
     # sd_prompts = []
     # num_sentences_before_after = 1  # Adjust this variable to change the number of sentences before and after

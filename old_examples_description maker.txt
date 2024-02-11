@@ -1,0 +1,41 @@
+INPUT:\n
+   'I\'m in highschool, I get a job fast-food place. It starts at 2pm. That\'s the same time school ends. The fast-food restaurant is just across the street from the school. The boss at the fast-food restaurant seems pretty intimidating. I\'m at my last class of the day at school and a student says they have to go because it is 2pm. I didn\'t realize it was so late, I\'m disappointed. I have to put on my fast-food work shirt. I hurry over to work, but get there late. I decide I will ask for later start times. I have some thought about starting later meaning that I will have to stay very late.\n\n
+    'OUTPUT:\n
+    '{
+  "I'm in highschool, I get a job fast-food place.": "A teenager standing outside a bustling fast-food restaurant, looking intrigued yet slightly apprehensive.",
+  "It starts at 2pm. That's the same time school ends.": "A school bell ringing with students streaming out, the fast-food restaurant visible across the street, clock showing 2:00 PM.",
+  "The fast-food restaurant is just across the street from the school.": "A busy street scene with a high school on one side and a fast-food restaurant on the other, students crossing between them.",
+  "The boss at the fast-food restaurant seems pretty intimidating.": "An imposing figure looming over the fast-food counter, casting a shadow, with a stern expression.",
+  "I'm at my last class of the day at school and a student says they have to go because it is 2pm.": "A classroom with a clock showing 2:00 PM, a student hastily packing up, while others look on.",
+  "I didn't realize it was so late, I'm disappointed.": "A close-up of a dismayed student glancing at a clock, realization and disappointment evident on their face.",
+  "I have to put on my fast-food work shirt.": "A hurried change into a fast-food uniform, logo visible, in a cramped and nondescript space.",
+  "I hurry over to work, but get there late.": "Rushing across the street towards the fast-food restaurant, looking anxious, with the restaurant's sign in the background.",
+  "I decide I will ask for later start times.": "Standing determined in front of a daunting fast-food manager, ready to negotiate a change in schedule.",
+  "I have some thought about starting later meaning that I will have to stay very late.": "Contemplating the empty, dimly lit interior of the fast-food restaurant late at night, broom in hand."
+}
+
+INPUT:\n
+I'm homeless in nyc, walking through parks and such. Finally , I decide I will go for a swim to clean off. I want to put on my bathing suit before I head to the beach, so I go behind a building, I decide I will be super fast, take off my underwear, then try to quickly put on the swim shorts. They are so tight, it is slow  the parking lot is on a huge hill, people see me, I can see them pointing, I am really hoping no. Cop drives by. Finally I get them on.
+OUTPUT:\n
+{
+  "I'm homeless in nyc, walking through parks and such.": "A lone figure meanders through a lush, green park in the heart of New York City, surrounded by towering skyscrapers under a clear blue sky.",
+  "Finally, I decide I will go for a swim to clean off.": "A determined individual stands at the edge of a serene urban waterfront, gazing at the water's gentle waves, ready to take a refreshing swim.",
+  "I want to put on my bathing suit before I head to the beach, so I go behind a building,": "Behind a secluded urban building, a person prepares for a swim, creating a makeshift changing room amidst the concrete landscape.",
+  "I decide I will be super fast, take off my underwear, then try to quickly put on the swim shorts.": "In a blur of motion, an individual attempts to swiftly change into swimwear, capturing a moment of urgency and haste.",
+  "They are so tight, it is slow": "Struggling with the swim shorts, the individual battles with the tight fabric, a visible struggle against the constricting garment.",
+  "the parking lot is on a huge hill, people see me, I can see them pointing,": "From a high vantage point, onlookers in a sloped parking lot catch sight of the changing individual, pointing and observing from afar.",
+  "I am really hoping no. Cop drives by.": "An anxious glance is cast towards the street, filled with the hope that no police car appears, under the watchful eyes of the city.",
+  "Finally I get them on.": "Triumphantly, the swim shorts are on, the person stands ready, a small victory against the backdrop of an urban challenge."
+}
+INPUT:\n
+Rode the bus with two friends trying to find our hotel. In the bus showing some strangers some magic tricks, but i didn't know many. They were only somewhat impressed. The muscle pass didn't really work well since I'm out of practice and my callous is gone. We were not sure which stop to use, but we got off eventually. While walking through a mall with a stranger who was helping us find our hotel I saw a sick or wounded dog on a blanket and I thought it was a veterinarian in the mall. Then I noticed large raw meat near the dog and realized they were killing dogs for food.
+OUTPUT:\n
+{
+  "Rode the bus with two friends trying to find our hotel.": "Three friends seated on a bus, looking around with maps in hand, portraying a sense of adventure and mild confusion.",
+  "In the bus showing some strangers some magic tricks, but i didn't know many.": "A small group of passengers gathered around, watching a person attempting magic tricks with cards, expressions mixed with mild interest.",
+  "They were only somewhat impressed.": "Spectators with polite smiles, clapping lightly, not fully captivated by the performance.",
+  "The muscle pass didn't really work well since I'm out of practice and my callous is gone.": "A close-up of a hand trying to perform the muscle pass with a coin, faltering, highlighting the absence of a callous.",
+  "We were not sure which stop to use, but we got off eventually.": "The group of friends hesitating at the bus door, then stepping off onto a busy street, looking uncertainly in different directions.",
+  "While walking through a mall with a stranger who was helping us find our hotel": "A group of friends following a helpful stranger through a bustling mall, luggage in tow, passing shops and kiosks.",
+  "I saw a sick or wounded dog on a blanket and I thought it was a veterinarian in the mall.": "A poignant scene of a sick dog lying on a blanket in the corner of a busy mall, with people passing by, a sign of veterinary care assumed nearby.",
+  "Then I noticed large raw meat near the dog and realized they were killing dogs for food.": "A shocking revelation as the viewpoint shifts to reveal not a vet's care but large pieces of raw meat nearby, hinting at a grim purpose, under the harsh mall lighting."

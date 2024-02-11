@@ -74,49 +74,36 @@ def get_json_descriptions_from_story(user_prompt):
     
     system_prompt = '''Your input is a story, and you output a JSON that divides it into visual aspects and their descriptions. Here are some examples: \n\n
     'INPUT:\n
-    'I\'m in highschool, I get a job fast-food place. It starts at 2pm. That\'s the same time school ends. The fast-food restaurant is just across the street from the school. The boss at the fast-food restaurant seems pretty intimidating. I\'m at my last class of the day at school and a student says they have to go because it is 2pm. I didn\'t realize it was so late, I\'m disappointed. I have to put on my fast-food work shirt. I hurry over to work, but get there late. I decide I will ask for later start times. I have some thought about starting later meaning that I will have to stay very late.\n\n
+    A 30 year old man with long blond hair is with Turkish girl with long dark hair, they are traveling and seeing family. They are deciding to break up. They are in a bedroom, just the two of them. For some reason, A 30 year old man with long blond hair gives her his electronic weed pen in the breakup. A bit later, A 30 year old man with long blond hair decides that he wants it back. A 30 year old man with long blond hair goes and asks her for the pen he gave her earlier. A 30 year old man with long blond hair doesn't want to be obvious because she is talking to a father figure. The father figure is quite interested in why A 30 year old man with long blond hair keeps asking her about a pen. She doesn't seem to know what A 30 year old man with long blond hair is talking about. Finally, she realizes and she throws the pen in a fire. The father figure realizes and gets very angry. The father starts to turn into a fiery devil. A 30 year old man with long blond hair runs to the bathroom to escape him. It is pitch black in the small bathroom. A 30 year old man with long blond hair doesn't know why, but the devil begins chanting infanticide over and over.
     'OUTPUT:\n
-    '{
-  "I'm in highschool, I get a job fast-food place.": "A teenager standing outside a bustling fast-food restaurant, looking intrigued yet slightly apprehensive.",
-  "It starts at 2pm. That's the same time school ends.": "A school bell ringing with students streaming out, the fast-food restaurant visible across the street, clock showing 2:00 PM.",
-  "The fast-food restaurant is just across the street from the school.": "A busy street scene with a high school on one side and a fast-food restaurant on the other, students crossing between them.",
-  "The boss at the fast-food restaurant seems pretty intimidating.": "An imposing figure looming over the fast-food counter, casting a shadow, with a stern expression.",
-  "I'm at my last class of the day at school and a student says they have to go because it is 2pm.": "A classroom with a clock showing 2:00 PM, a student hastily packing up, while others look on.",
-  "I didn't realize it was so late, I'm disappointed.": "A close-up of a dismayed student glancing at a clock, realization and disappointment evident on their face.",
-  "I have to put on my fast-food work shirt.": "A hurried change into a fast-food uniform, logo visible, in a cramped and nondescript space.",
-  "I hurry over to work, but get there late.": "Rushing across the street towards the fast-food restaurant, looking anxious, with the restaurant's sign in the background.",
-  "I decide I will ask for later start times.": "Standing determined in front of a daunting fast-food manager, ready to negotiate a change in schedule.",
-  "I have some thought about starting later meaning that I will have to stay very late.": "Contemplating the empty, dimly lit interior of the fast-food restaurant late at night, broom in hand."
-}
-
-INPUT:\n
-I'm homeless in nyc, walking through parks and such. Finally , I decide I will go for a swim to clean off. I want to put on my bathing suit before I head to the beach, so I go behind a building, I decide I will be super fast, take off my underwear, then try to quickly put on the swim shorts. They are so tight, it is slow  the parking lot is on a huge hill, people see me, I can see them pointing, I am really hoping no. Cop drives by. Finally I get them on.
-OUTPUT:\n
-{
-  "I'm homeless in nyc, walking through parks and such.": "A lone figure meanders through a lush, green park in the heart of New York City, surrounded by towering skyscrapers under a clear blue sky.",
-  "Finally, I decide I will go for a swim to clean off.": "A determined individual stands at the edge of a serene urban waterfront, gazing at the water's gentle waves, ready to take a refreshing swim.",
-  "I want to put on my bathing suit before I head to the beach, so I go behind a building,": "Behind a secluded urban building, a person prepares for a swim, creating a makeshift changing room amidst the concrete landscape.",
-  "I decide I will be super fast, take off my underwear, then try to quickly put on the swim shorts.": "In a blur of motion, an individual attempts to swiftly change into swimwear, capturing a moment of urgency and haste.",
-  "They are so tight, it is slow": "Struggling with the swim shorts, the individual battles with the tight fabric, a visible struggle against the constricting garment.",
-  "the parking lot is on a huge hill, people see me, I can see them pointing,": "From a high vantage point, onlookers in a sloped parking lot catch sight of the changing individual, pointing and observing from afar.",
-  "I am really hoping no. Cop drives by.": "An anxious glance is cast towards the street, filled with the hope that no police car appears, under the watchful eyes of the city.",
-  "Finally I get them on.": "Triumphantly, the swim shorts are on, the person stands ready, a small victory against the backdrop of an urban challenge."
+    {
+  "a 30-year old man with long blond hair is with a Turkish girl with long dark hair, they are traveling and seeing family.": "A picturesque scene of a 30-year-old man with sun-kissed blond hair and a Turkish woman with cascading dark locks, sharing a moment of joy and companionship against a backdrop of travel and familial connections.",
+  "the 30-year old man with long blond hair and his partner are making the decision to separate.": "A heart-wrenching moment captured at a metaphorical crossroads, where a man with flowing blond hair and his companion face each other, the air heavy with the decision of parting ways, encapsulating the gravity of their farewell.",
+  "a 30-year old man with long blond hair and another person are in a bedroom together.": "An intimate and personal scene unfolds in a softly lit bedroom, where a 30-year-old with blond hair shares a private moment, hinting at the complexities of human connections behind closed doors.",
+  "in the breakup, a 30-year old man with long blond hair gives her his electronic weed pen.": "In a poignant gesture of separation, the blond man solemnly hands over an electronic weed pen to his partner, a symbolic act of parting gifts and shared memories coming to an end.",
+  "a bit later, the 30-year old man with long blond hair decides that he wants the particular item back.": "A scene of reflection and reconsideration as the blond man contemplates his previous decision, the desire to reclaim the electronic pen symbolizing a deeper yearning for lost connections.",
+  "the 30-year old man with long blond hair goes and asks her for the pen he gave her earlier.": "A delicate encounter unfolds as the man, with his distinctive blond hair, approaches his former partner to ask for the electronic pen, revealing layers of unresolved feelings and attachment.",
+  "the 30-year old man with long blond hair doesn't want the situation to appear obvious because he understands that she is conversing with an individual who holds a fatherly role or significance in her life.": "Amidst a sensitive conversation, the blond man tactfully navigates the complex dynamics, wary of the presence of a paternal figure in his ex-partner's life, highlighting his cautious approach to avoid misunderstandings.",
+  "the 30-year old man with long blond hair's father figure is quite interested in why he keeps asking the woman about a pen.": "Curiosity piques as the father figure observes the blond man's persistent inquiries about the pen, adding a layer of intrigue and tension to the unfolding narrative.",
+  "the 30-year old man with long blond hair doesn't seem to know what he is talking about.": "Confusion and ambiguity mark the conversation, as the blond man struggles to articulate his reasons, his uncertainty casting a shadow over his intentions.",
+  "finally she realizes and she throws the pen in a fire.": "A dramatic climax as the woman, upon grasping the full import of the request, decisively throws the electronic pen into the flames, symbolizing the irreversible severing of their ties.",
+  "the father figure realizes and gets very angry. the father figure realizes and gets very angry.": "A sudden surge of anger overwhelms the father figure as he comprehends the situation, his fury embodying the emotional intensity of the moment.",
+  "the father starts to turn into a fiery devil.": "A supernatural twist as the father figure undergoes a terrifying transformation into a devil of flames, introducing a fantastical element to the narrative's climax.",
+  "the 30-year old man with long blond hair runs to the bathroom to escape him.": "In a desperate bid for safety, the blond man flees to the confines of a bathroom, seeking refuge from the infernal wrath unleashed upon him.",
+  "it is pitch black in the small bathroom.": "A palpable sense of dread fills the air as darkness engulfs the small bathroom, the absence of light mirroring the man's fear and isolation.",
+  "the 30-year old man with long blond hair doesn't know why, but the devil begins chanting infanticide over and over.": "An eerie atmosphere envelops the scene as the devil, amidst flames, ominously chants 'infanticide', the repetition of the word adding a chilling resonance to the encounter's climax."
 }
 INPUT:\n
-Rode the bus with two friends trying to find our hotel. In the bus showing some strangers some magic tricks, but i didn't know many. They were only somewhat impressed. The muscle pass didn't really work well since I'm out of practice and my callous is gone. We were not sure which stop to use, but we got off eventually. While walking through a mall with a stranger who was helping us find our hotel I saw a sick or wounded dog on a blanket and I thought it was a veterinarian in the mall. Then I noticed large raw meat near the dog and realized they were killing dogs for food.
+A 30 year old man with long blond hair is on a small vacation with family. They are on a boat at a boat dock. The young nieces are there on the boat dock. One little girl falls in the water and A 30 year old man with long blond hair helps her out. Uncle Alan shows up, A 30 year old man with long blond hair feels bad about Logan dying and A 30 year old man with long blond hair holds his hand. It is awkward, they switch to holding pinky fingers.
 OUTPUT:\n
 {
-  "Rode the bus with two friends trying to find our hotel.": "Three friends seated on a bus, looking around with maps in hand, portraying a sense of adventure and mild confusion.",
-  "In the bus showing some strangers some magic tricks, but i didn't know many.": "A small group of passengers gathered around, watching a person attempting magic tricks with cards, expressions mixed with mild interest.",
-  "They were only somewhat impressed.": "Spectators with polite smiles, clapping lightly, not fully captivated by the performance.",
-  "The muscle pass didn't really work well since I'm out of practice and my callous is gone.": "A close-up of a hand trying to perform the muscle pass with a coin, faltering, highlighting the absence of a callous.",
-  "We were not sure which stop to use, but we got off eventually.": "The group of friends hesitating at the bus door, then stepping off onto a busy street, looking uncertainly in different directions.",
-  "While walking through a mall with a stranger who was helping us find our hotel": "A group of friends following a helpful stranger through a bustling mall, luggage in tow, passing shops and kiosks.",
-  "I saw a sick or wounded dog on a blanket and I thought it was a veterinarian in the mall.": "A poignant scene of a sick dog lying on a blanket in the corner of a busy mall, with people passing by, a sign of veterinary care assumed nearby.",
-  "Then I noticed large raw meat near the dog and realized they were killing dogs for food.": "A shocking revelation as the viewpoint shifts to reveal not a vet's care but large pieces of raw meat nearby, hinting at a grim purpose, under the harsh mall lighting."
+  "a 30-year old man with long blond hair is on a small vacation with his family.": "Surrounded by the tranquil sea, a man in his thirties with sunlit blonde hair enjoys a serene moment on a boat, the essence of family vacation surrounding him.",
+  "a 30-year old man with long blond hair and another person are on a boat at a boat dock.": "A serene dock scene, where a man adorned with long blonde hair and a companion stand together on a boat, the wooden planks of the dock beneath them telling stories of many such departures.",
+  "the young nieces are there on the boat dock.": "Excitement and joy fill the air as young girls, the man's nieces, play and laugh on the dock, their youthful energy infectious.",
+  "a 30-year old man with long blond hair helps a little girl who has fallen in the water to get out.": "In a moment of quick action, the man with flowing blonde hair reaches into the water to rescue a little girl, ensuring her safety with a gentle embrace.",
+  "a 30-year old man with long blond hair feels bad about logan dying when uncle alan shows up, and he holds logan's hand in consolation.": "A poignant scene unfolds as the blonde man, touched by sorrow, offers comfort to Logan through a tender handhold, the arrival of Uncle Alan adding depth to the moment of grief.",
+  "it is awkward as the 30-year old man with long blond hair switches to holding pinky fingers.": "In a delicate shift of connection, the blonde man and the child exchange a pinky promise, an awkward yet deeply meaningful gesture that bridges their moment of discomfort."
 }
-
-
 '''  
     
     # stream = ollama.chat(
@@ -252,6 +239,28 @@ def get_image_description_ollama(image_path):
 # image_path = "/home/lunkwill/Pictures/Wallpapers/ai_art/_The_30-year-old_man's_face_contorts_in_horror_as__1_1.png"
 # print(get_image_description_ollama(image_path))
 #print(separate_sentence(story))
+
+def prompt_generator(user_prompt, original_sentence):
+
+    system_prompt = '''You receive some text and your respond with ONLY the indicated visually descriptive prompt. You want the prompt to be about 30 words or less, so remove any words that do not add significantly to the visual description. You also receive the SOURCE SENTENCE which you use to make any adjustments to the prompt. The prompt is meant to depict some aspect of the SOURCE SENTENCE. You do not submit any text other than the prompt. You do not make any preface to the prompt, the only text that you respond with is the prompt.'''  
+    
+    user_prompt = "SOURCE SENTENCE:\n"+original_sentence+"\nINPUT TEXT:\n"+user_prompt+"\nRESPONSE PROMPT:\n" 
+
+    # stream = ollama.generate(
+    #     model='solar',
+    #     prompt=user_prompt,
+    #     system=system_prompt,
+    #     # messages=[{'role': 'system', 'content': system_prompt},
+    #     #             {'role': 'user', 'content': user_prompt}],
+    #     stream=False,
+    #     #keep_awake= "0",
+    # )
+
+    # print(stream['response'])
+
+    # return stream['response']
+    response = generate_request("mixtral", system_prompt, user_prompt)
+    return response
 
 # sentences = sent_tokenize(story)
 # visual_aspects = []
