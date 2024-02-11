@@ -246,22 +246,26 @@ def prompt_generator(user_prompt, original_sentence):
     
     user_prompt = "SOURCE SENTENCE:\n"+original_sentence+"\nINPUT TEXT:\n"+user_prompt+"\nRESPONSE PROMPT:\n" 
 
-    # stream = ollama.generate(
-    #     model='solar',
-    #     prompt=user_prompt,
-    #     system=system_prompt,
-    #     # messages=[{'role': 'system', 'content': system_prompt},
-    #     #             {'role': 'user', 'content': user_prompt}],
-    #     stream=False,
-    #     #keep_awake= "0",
-    # )
-
-    # print(stream['response'])
-
-    # return stream['response']
     response = generate_request("mixtral", system_prompt, user_prompt)
     return response
+def prompt_generator_new(user_prompt, original_sentence):
 
+    system_prompt = '''You create simple visual descriptions after being given some information.'''  
+    
+    user_prompt = "Adjust the prompt shown here: '"+user_prompt+"' to make it describe something from this sentence '"+original_sentence+"'\nRESPONSE PROMPT:\n" 
+
+    response = generate_request("mixtral", system_prompt, user_prompt)
+    return response
+def prompt_generator_new2(user_prompt, original_sentence):
+
+    system_prompt = '''Simplify and translate a given text into a visually descriptive prompt. Focus on extracting the core visual elements that can be vividly imagined. Use the original sentence as a base to highlight or adjust the visual details. Aim for concise prompts that vividly capture the essence of the original sentence in under 25 words. Only the visual prompt is needed without any extra explanation.
+'''  
+    
+    user_prompt_formatted = f"Visual Base: {original_sentence}\nInspiration Text: {user_prompt}\nGenerate Visual Prompt:"
+    
+
+    response = generate_request("mixtral", system_prompt, user_prompt_formatted)
+    return response
 # sentences = sent_tokenize(story)
 # visual_aspects = []
 # for sentence in sentences:

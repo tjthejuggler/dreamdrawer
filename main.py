@@ -248,7 +248,17 @@ def story_to_sd_prompts(story):
             prompt_to_generate = ask_ollama.prompt_generator(image_prompt, original_sentence)
             prompt_to_generate = prompt_to_generate + ", realistic color photograph"
             list_of_list_of_prompts.append(prompt_to_generate)
+
+            prompt_to_generate = ask_ollama.prompt_generator_new(image_prompt, original_sentence)
+            prompt_to_generate = prompt_to_generate + ", realistic color photograph"
+            list_of_list_of_prompts.append(prompt_to_generate)            
             #ask_ollama.reduce_memory_usage()
+
+            prompt_to_generate = ask_ollama.prompt_generator_new2(image_prompt, original_sentence)
+            prompt_to_generate = prompt_to_generate + ", realistic color photograph"
+            list_of_list_of_prompts.append(prompt_to_generate)            
+            #ask_ollama.reduce_memory_usage()
+            
 
         kill_ollama.kill_ollama_processes(sudo_password)
         item_count = 0

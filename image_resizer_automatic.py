@@ -51,11 +51,11 @@ def process_images(image_paths, canvas_width, canvas_height, output_directory, o
         # Resize square and non-square images
         original_width, original_height = image.size
         if original_width == original_height:
-            image = image.resize((canvas_width, canvas_width), Image.ANTIALIAS)
+            image = image.resize((canvas_width, canvas_width), Image.LANCZOS)
         else:
             aspect_ratio = original_height / original_width
             new_height = int(canvas_width * aspect_ratio)
-            image = image.resize((canvas_width, new_height), Image.ANTIALIAS)
+            image = image.resize((canvas_width, new_height), Image.LANCZOS)
 
         # Calculate the top position for each image, including spacing
         top_position = sum([canvas_width + spacing for _ in range(i)]) if original_width == original_height else sum([int(canvas_width * (original_height / original_width)) + spacing for _ in range(i)])

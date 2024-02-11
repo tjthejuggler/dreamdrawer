@@ -51,9 +51,20 @@ class FileArrangerApp:
         self.file_listbox.bind('<Down>', self.move_down)
         self.file_listbox.bind('<Delete>', self.delete_selected)
 
-        # Store file paths
-        self.file_list = []
+#   UNCOMMENT THIS SECTION TO USE THE HARDCODED FILE LIST
+#         filenames = ["_Amidst_a_vibrant_nightclub__a_30-year-old_man_wit_0_0.png",
+# "_A_30-year-old_man_with_long_blond_hair_widens_his_0_0.png",
+# "_\"A_blond-haired_man__aged_30__faces_a_lined-up_cr_1_1.png",
+# "_Man_with_long_blond_hair_finds_connection_on_phon_1_1.png",
+# "_Blond_man_navigating_narrow_hallway__confronted_b_0_0.png",
+# "_Blond_man_in_vibrant_club__seeking_friend_with_lo_0_0.png",
+# "_Friends_with_blond-haired_man_search_charming_foo_0_0.png",
+# "_A_30-year-old_man__characterized_by_his_lengthy_b_0_0.png",
+# "_30-year-old_man_with_long_blond_hair_and_their_fu_0_0.png",]
 
+#         # Store file paths
+#         self.file_list = ["/home/lunkwill/projects/dreamdrawer/output_images/" + filename for filename in filenames]
+        self.file_list = []
         # Label for the image
         self.image_label = tk.Label(self.image_frame)
         self.image_label.pack()
